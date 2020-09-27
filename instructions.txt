@@ -1,0 +1,15 @@
+﻿Design an API server with a REST interface that can run a series of long-term jobs in parallel.
+A job is a shell operation that is called with the following executable: “/bin/longoperation”
+The API must support the following use cases:
+- user can start a new job
+- user can request the list of currently running jobs
+- user can request the list of stopped jobs
+- user can request the list of completed jobs
+- user can stop a job if this is currently running. An error will be returned if the job does not exist or is
+already completed or stopped
+If shut down, current running jobs will be tagged as stopped.
+The server needs to be written in Python.
+Please provides tests accordingly.
+
+
+
