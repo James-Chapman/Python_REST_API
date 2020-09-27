@@ -32,8 +32,6 @@ class RESTfulHTTPRequestHandler(DefaultHTTPRequestHandler):
         try:
             parsed_path = urlparse(self.path)
             if (parsed_path.path == "/api/jobs"):
-                logger.debug(parsed_path.path)
-                logger.debug(parsed_path.query)
                 if (parsed_path.query == "status=running"):
                     self._handle_get_jobs_running()
                 elif (parsed_path.query == "status=stopped"):
@@ -65,7 +63,6 @@ class RESTfulHTTPRequestHandler(DefaultHTTPRequestHandler):
             else:
                 self.send_response(404)
                 self.end_headers()
-                logger.debug("Sent response: \"404\"")
         except Exception as ex:
             logger.error(str(ex))
             raise ex
@@ -91,7 +88,6 @@ class RESTfulHTTPRequestHandler(DefaultHTTPRequestHandler):
             else:
                 self.send_response(404)
                 self.end_headers()
-                logger.debug("Sent response: \"404\"")
         except Exception as ex:
             logger.error(str(ex))
             raise ex
@@ -133,6 +129,15 @@ class RESTfulHTTPRequestHandler(DefaultHTTPRequestHandler):
             self.send_response(500)
 
 
+    def _send_json_response(self, code, map):
+        jsonString = json.dumps(map)
+        self.send_response(code)
+        self.send_header('Content-type', 'application/json;charset=utf-8')
+        self.send_header('Content-length', len(jsonString))
+        self.end_headers()
+        self.wfile.write(bytes(jsonString, "utf8"))
+
+
     def _handle_get_job(self, id):
         job = self.jobManager.get_job(id)
         jobMap = dict()
@@ -144,12 +149,7 @@ class RESTfulHTTPRequestHandler(DefaultHTTPRequestHandler):
             code = 200
         else:
             jobMap = {"id": -1}
-        jsonString = json.dumps(jobMap)
-        self.send_response(code)
-        self.send_header('Content-type', 'application/json;charset=utf-8')
-        self.send_header('Content-length', len(jsonString))
-        self.end_headers()
-        self.wfile.write(bytes(jsonString, "utf8"))
+        self._send_json_response(code, jobMap)
 
 
     def _handle_get_jobs_all(self):
@@ -157,12 +157,7 @@ class RESTfulHTTPRequestHandler(DefaultHTTPRequestHandler):
         jobMap = {
             "jobs": joblist
         }
-        jsonString = json.dumps(jobMap)
-        self.send_response(200)
-        self.send_header('Content-type', 'application/json;charset=utf-8')
-        self.send_header('Content-length', len(jsonString))
-        self.end_headers()
-        self.wfile.write(bytes(jsonString, "utf8"))
+        self._send_json_response(200, jobMap)
 
 
     def _handle_get_jobs_running(self):
@@ -170,12 +165,7 @@ class RESTfulHTTPRequestHandler(DefaultHTTPRequestHandler):
         jobMap = {
             "jobs": joblist
         }
-        jsonString = json.dumps(jobMap)
-        self.send_response(200)
-        self.send_header('Content-type', 'application/json;charset=utf-8')
-        self.send_header('Content-length', len(jsonString))
-        self.end_headers()
-        self.wfile.write(bytes(jsonString, "utf8"))
+        self._send_json_response(200, jobMap)
 
 
     def _handle_get_jobs_stopped(self):
@@ -183,12 +173,7 @@ class RESTfulHTTPRequestHandler(DefaultHTTPRequestHandler):
         jobMap = {
             "jobs": joblist
         }
-        jsonString = json.dumps(jobMap)
-        self.send_response(200)
-        self.send_header('Content-type', 'application/json;charset=utf-8')
-        self.send_header('Content-length', len(jsonString))
-        self.end_headers()
-        self.wfile.write(bytes(jsonString, "utf8"))
+        self._send_json_response(200, jobMap)
 
 
     def _handle_get_jobs_completed(self):
@@ -196,10 +181,5 @@ class RESTfulHTTPRequestHandler(DefaultHTTPRequestHandler):
         jobMap = {
             "jobs": joblist
         }
-        jsonString = json.dumps(jobMap)
-        self.send_response(200)
-        self.send_header('Content-type', 'application/json;charset=utf-8')
-        self.send_header('Content-length', len(jsonString))
-        self.end_headers()
-        self.wfile.write(bytes(jsonString, "utf8"))
+        self._send_json_response(200, jobMap)
 
