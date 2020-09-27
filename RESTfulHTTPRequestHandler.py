@@ -69,7 +69,7 @@ class RESTfulHTTPRequestHandler(DefaultHTTPRequestHandler):
 
 
     def _handle_DELETE(self):
-        """Handle POST function."""
+        """Handle DELETE function."""
         try:
             self.send_response(404)
             self.end_headers()
@@ -79,7 +79,7 @@ class RESTfulHTTPRequestHandler(DefaultHTTPRequestHandler):
 
 
     def _handle_PUT(self):
-        """Handle POST function."""
+        """Handle PUT function."""
         try:
             parsed_path = urlparse(self.path)
             m = re.match(r"/api/jobs/(\d+)/stop", parsed_path.path)
@@ -94,6 +94,7 @@ class RESTfulHTTPRequestHandler(DefaultHTTPRequestHandler):
 
 
     def _handle_post_job_start(self):
+        """Handle POST to /api/jobs"""
         try:
             content_length = int(self.headers['Content-Length'])
             body = self.rfile.read(content_length)
@@ -122,6 +123,7 @@ class RESTfulHTTPRequestHandler(DefaultHTTPRequestHandler):
 
 
     def _handle_put_job_stop(self, id):
+        """Handle PUT to /api/jobs/<id>/stop"""
         if self.jobManager.kill_job(id):
             self.send_response(200)
             self.end_headers()
@@ -130,6 +132,7 @@ class RESTfulHTTPRequestHandler(DefaultHTTPRequestHandler):
 
 
     def _send_json_response(self, code, map):
+        """Sends HTTP response with JSON in the body"""
         jsonString = json.dumps(map)
         self.send_response(code)
         self.send_header('Content-type', 'application/json;charset=utf-8')
@@ -139,6 +142,7 @@ class RESTfulHTTPRequestHandler(DefaultHTTPRequestHandler):
 
 
     def _handle_get_job(self, id):
+        """Handle GET to /api/jobs/<id>"""
         job = self.jobManager.get_job(id)
         jobMap = dict()
         code = 404
@@ -153,6 +157,7 @@ class RESTfulHTTPRequestHandler(DefaultHTTPRequestHandler):
 
 
     def _handle_get_jobs_all(self):
+        """Handle GET to /api/jobs"""
         joblist = self.jobManager.get_jobs()
         jobMap = {
             "jobs": joblist
@@ -161,6 +166,7 @@ class RESTfulHTTPRequestHandler(DefaultHTTPRequestHandler):
 
 
     def _handle_get_jobs_running(self):
+        """Handle GET to /api/jobs?status=running"""
         joblist = self.jobManager.get_jobs_running()
         jobMap = {
             "jobs": joblist
@@ -169,6 +175,7 @@ class RESTfulHTTPRequestHandler(DefaultHTTPRequestHandler):
 
 
     def _handle_get_jobs_stopped(self):
+        """Handle GET to /api/jobs?status=stopped"""
         joblist = self.jobManager.get_jobs_stopped()
         jobMap = {
             "jobs": joblist
@@ -177,6 +184,7 @@ class RESTfulHTTPRequestHandler(DefaultHTTPRequestHandler):
 
 
     def _handle_get_jobs_completed(self):
+        """Handle GET to /api/jobs?status=completed"""
         joblist = self.jobManager.get_jobs_completed()
         jobMap = {
             "jobs": joblist
