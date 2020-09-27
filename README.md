@@ -9,3 +9,7 @@ REST API written in Python 3
   * `GET  /api/jobs?status=completed` - Get a list of completed jobs
   * `GET  /api/jobs/<job_id>` - Get details of a particular job
   * `PUT  /api/jobs/<job_id>/stop` - Stop a job
+
+### UnitTests
+
+To run tests, run `pytest`
